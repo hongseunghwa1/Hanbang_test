@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GitHub 완전정복 가이드 · AI닷</title>
+<style>
+  /* ── 폰트 ── */
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
+
+  /* ── 토큰 ── */
+  :root {
+    --blue:        #007AFF;
+    --blue-dk:     #0051A8;
+    --blue-lt:     #E3F0FF;
+    --green:       #34C759;
+    --green-dk:    #248A3D;
+    --green-lt:    #E4F8EB;
+    --red:         #FF3B30;
+    --red-dk:      #C0392B;
+    --red-lt:      #FFF0EF;
+    --bg:          #F2F2F7;
+    --surface:     #FFFFFF;
+    --surface2:    #F8F8FC;
+    --label:       #1C1C1E;
+    --label2:      #3A3A3C;
+    --label3:      #6C6C70;
+    --sep:         #E5E5EA;
+    --radius-card: 22px;
+    --radius-sm:   12px;
+    --shadow-card: 0 4px 24px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.05);
+    --shadow-btn:  0 2px 8px rgba(0,0,0,.15);
+    --font: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  /* ── 리셋 ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--label);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     HERO HEADER
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .hero {
+    background: linear-gradient(160deg, var(--blue-dk) 0%, var(--blue) 55%, #3AB7FF 100%);
+    padding: 56px 20px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(255,255,255,.10) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 70%, rgba(0,200,80,.12) 0%, transparent 70%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.18);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.30);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,.95);
+    letter-spacing: .4px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .hero h1 {
+    font-size: clamp(32px, 8vw, 48px);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .hero h1 span { color: #7DF0FF; }
+  .hero-sub {
+    font-size: 14px; font-weight: 400; color: rgba(255,255,255,.80);
+    margin-bottom: 28px; position: relative;
+  }
+  /* 3색 태그 */
+  .hero-tags {
+    display: flex; justify-content: center; gap: 8px;
+    flex-wrap: wrap; position: relative;
+  }
+  .hero-tags span {
+    font-size: 12px; font-weight: 700;
+    padding: 5px 13px;
+    border-radius: 999px;
+    letter-spacing: .3px;
+  }
+  .tag-blue  { background: rgba(255,255,255,.20); color: #fff; border: 1px solid rgba(255,255,255,.35); }
+  .tag-green { background: var(--green); color: #fff; }
+  .tag-red   { background: var(--red);   color: #fff; }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     목차 바
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .toc-wrap {
+    padding: 0 16px;
+    margin-top: -1px;
+  }
+  .toc-scroll {
+    display: flex; gap: 8px;
+    overflow-x: auto; padding: 16px 0;
+    scrollbar-width: none;
+  }
+  .toc-scroll::-webkit-scrollbar { display: none; }
+  .toc-pill {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface);
+    border-radius: 999px;
+    padding: 7px 14px 7px 10px;
+    font-size: 12px; font-weight: 600; color: var(--label);
+    text-decoration: none;
+    box-shadow: var(--shadow-card);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .toc-pill:active { transform: scale(.96); }
+  .toc-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     MAIN CONTENT
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .content { padding: 8px 16px 60px; max-width: 480px; margin: 0 auto; }
+
+  /* ── 섹션 ── */
+  .section { margin-bottom: 40px; }
+
+  /* ── 섹션 헤더 카드 ── */
+  .sec-header {
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+    padding: 22px 20px 20px;
+    display: flex; align-items: center; gap: 16px;
+    overflow: hidden; position: relative;
+  }
+  .sec-header::before {
+    content: '';
+    position: absolute; right: -20px; top: -20px;
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.12);
+  }
+  .sec-header::after {
+    content: '';
+    position: absolute; right: 20px; bottom: -30px;
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .sec-num {
+    width: 52px; height: 52px; border-radius: 16px;
+    background: rgba(255,255,255,.25);
+    display: grid; place-items: center;
+    font-size: 26px; font-weight: 900; color: #fff;
+    flex-shrink: 0; position: relative; z-index: 1;
+    backdrop-filter: blur(4px);
+  }
+  .sec-info { position: relative; z-index: 1; }
+  .sec-info h2 { font-size: 20px; font-weight: 800; color: #fff; line-height: 1.2; }
+  .sec-info p  { font-size: 12px; color: rgba(255,255,255,.80); margin-top: 3px; font-weight: 400; }
+
+  /* ── 섹션 바디 카드 ── */
+  .sec-body {
+    background: var(--surface);
+    border-radius: 0 0 var(--radius-card) var(--radius-card);
+    padding: 20px 18px 22px;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* ── 서브 타이틀 ── */
+  .sub-title {
+    font-size: 13px; font-weight: 700; color: var(--label3);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin: 22px 0 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sub-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--sep);
+  }
+  .sub-title:first-child { margin-top: 0; }
+
+  /* ── 본문 ── */
+  .body-text {
+    font-size: 14px; color: var(--label2); line-height: 1.7;
+    margin-bottom: 8px;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     STEP CARDS
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .steps { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .step-card {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    border: 1px solid var(--sep);
+    position: relative;
+    overflow: hidden;
+    transition: transform .15s;
+  }
+  .step-card:active { transform: scale(.98); }
+  .step-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 800; color: #fff;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step-text { flex: 1; }
+  .step-main { font-size: 14px; font-weight: 600; color: var(--label); line-height: 1.4; }
+  .step-sub  { font-size: 12px; color: var(--label3); margin-top: 3px; line-height: 1.5; }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     CODE BOX
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .code-box {
+    background: #0D1117;
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin: 10px 0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .code-box code {
+    font-family: 'SF Mono', 'Fira Mono', 'Courier New', monospace;
+    font-size: 15px; font-weight: 700;
+    flex: 1;
+  }
+  .code-copy {
+    background: rgba(255,255,255,.1);
+    border: none; border-radius: 7px;
+    padding: 5px 10px;
+    font-size: 11px; font-weight: 600; color: rgba(255,255,255,.7);
+    cursor: pointer; transition: background .15s;
+    flex-shrink: 0;
+  }
+  .code-copy:active { background: rgba(255,255,255,.2); }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     ALERT BOXES
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .alert {
+    border-radius: var(--radius-sm);
+    padding: 13px 15px;
+    margin: 12px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+    border-width: 1px; border-style: solid;
+  }
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert-body {}
+  .alert-label { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
+  .alert-text  { font-size: 13px; line-height: 1.6; }
+
+  .alert-tip  { background: var(--blue-lt);  border-color: rgba(0,122,255,.25); }
+  .alert-tip .alert-label { color: var(--blue-dk); }
+  .alert-tip .alert-text  { color: var(--label2); }
+
+  .alert-warn { background: var(--red-lt);   border-color: rgba(255,59,48,.25); }
+  .alert-warn .alert-label { color: var(--red-dk); }
+  .alert-warn .alert-text  { color: var(--label2); }
+
+  .alert-ok   { background: var(--green-lt); border-color: rgba(52,199,89,.25); }
+  .alert-ok .alert-label { color: var(--green-dk); }
+  .alert-ok .alert-text  { color: var(--label2); }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     INFO TABLE
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .info-table { width: 100%; border-collapse: collapse; border-radius: var(--radius-sm); overflow: hidden; margin: 10px 0; }
+  .info-table th {
+    padding: 10px 12px; font-size: 12px; font-weight: 700;
+    color: #fff; text-align: left;
+  }
+  .info-table td {
+    padding: 10px 12px; font-size: 13px; color: var(--label2);
+    border-bottom: 1px solid var(--sep);
+    vertical-align: top;
+  }
+  .info-table tr:last-child td { border-bottom: none; }
+  .info-table tr:nth-child(odd) td  { background: var(--surface2); }
+  .info-table tr:nth-child(even) td { background: var(--surface); }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     COMPARE BOX
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+  .compare-col {
+    border-radius: var(--radius-sm);
+    padding: 13px 13px;
+    border-width: 1.5px; border-style: solid;
+  }
+  .compare-bad  { background: var(--red-lt);   border-color: rgba(255,59,48,.30); }
+  .compare-good { background: var(--green-lt); border-color: rgba(52,199,89,.30); }
+  .compare-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .compare-bad  .compare-title { color: var(--red-dk); }
+  .compare-good .compare-title { color: var(--green-dk); }
+  .compare-item { font-size: 12px; color: var(--label2); margin-bottom: 4px; line-height: 1.5; }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     FLOW BANNER
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .flow {
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto; padding: 4px 0 8px;
+    scrollbar-width: none; margin: 10px 0;
+  }
+  .flow::-webkit-scrollbar { display: none; }
+  .flow-step {
+    flex-shrink: 0;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px; font-weight: 700; color: #fff;
+    text-align: center; white-space: nowrap;
+  }
+  .flow-arrow {
+    flex-shrink: 0;
+    font-size: 14px; font-weight: 700;
+    padding: 0 4px; color: var(--label3);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     QUESTION BOX (Claude 예시)
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .q-box {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--sep);
+    overflow: hidden; margin: 10px 0;
+  }
+  .q-header {
+    padding: 9px 14px;
+    font-size: 11px; font-weight: 700; color: #fff;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .q-item {
+    padding: 12px 14px;
+    border-top: 1px solid var(--sep);
+  }
+  .q-label { font-size: 11px; font-weight: 700; margin-bottom: 5px; }
+  .q-text  {
+    font-family: 'SF Mono', 'Fira Mono', monospace;
+    font-size: 12px; color: var(--label2);
+    background: #fff;
+    border-radius: 8px; padding: 9px 11px;
+    border: 1px solid var(--sep);
+    line-height: 1.6;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     FOOTER
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .footer {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    margin: 0 16px 40px;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    max-width: 480px; margin-left: auto; margin-right: auto;
+  }
+  .footer-cell {
+    padding: 18px 12px;
+    text-align: center;
+  }
+  .footer-cell .f-title { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+  .footer-cell .f-sub   { font-size: 11px; color: rgba(255,255,255,.75); }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     UTILITY
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .mt8  { margin-top: 8px; }
+  .mt12 { margin-top: 12px; }
+  .mt16 { margin-top: 16px; }
+  .gap8 { margin-bottom: 8px; }
+
+  /* 색상 헬퍼 */
+  .c-blue  { color: var(--blue); }
+  .c-green { color: var(--green); }
+  .c-red   { color: var(--red); }
+
+  /* ── 섹션별 테마 ── */
+  .theme-blue  .sec-header { background: linear-gradient(135deg, var(--blue-dk), var(--blue)); }
+  .theme-green .sec-header { background: linear-gradient(135deg, var(--green-dk), var(--green)); }
+  .theme-red   .sec-header { background: linear-gradient(135deg, var(--red-dk), var(--red)); }
+
+  .theme-blue  .sec-header::before { background: rgba(0,200,255,.15); }
+  .theme-green .sec-header::before { background: rgba(255,255,100,.12); }
+  .theme-red   .sec-header::before { background: rgba(255,200,0,.12); }
+
+  /* step card 테두리 */
+  .theme-blue  .step-card::before { background: var(--blue);  }
+  .theme-green .step-card::before { background: var(--green); }
+  .theme-red   .step-card::before { background: var(--red);   }
+
+  .theme-blue  .step-num { background: var(--blue);  }
+  .theme-green .step-num { background: var(--green); }
+  .theme-red   .step-num { background: var(--red);   }
+
+  .theme-blue  .info-table th { background: var(--blue);  }
+  .theme-green .info-table th { background: var(--green); }
+  .theme-red   .info-table th { background: var(--red);   }
+
+  .theme-blue  .flow-step { background: var(--blue);  }
+  .theme-green .flow-step { background: var(--green); }
+  .theme-red   .flow-step { background: var(--red);   }
+
+  .theme-blue  .q-header { background: var(--blue);  }
+  .theme-green .q-header { background: var(--green); }
+  .theme-red   .q-header { background: var(--red);   }
+
+  .theme-blue  code  { color: #7DF0FF; }
+  .theme-green code  { color: #7DFFB2; }
+  .theme-red   code  { color: #FFAA99; }
+
+  /* 애니메이션 - 스크롤 차단 방지: opacity 고정, translateY만 사용 */
+  @keyframes fadeUp {
+    from { opacity: 1; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section {
+    opacity: 1;
+    animation: fadeUp .45s ease forwards;
+  }
+  .section:nth-child(1) { animation-delay: .04s; }
+  .section:nth-child(2) { animation-delay: .08s; }
+  .section:nth-child(3) { animation-delay: .12s; }
+  .section:nth-child(4) { animation-delay: .16s; }
+  .section:nth-child(5) { animation-delay: .20s; }
+  .section:nth-child(6) { animation-delay: .24s; }
+  .section:nth-child(7) { animation-delay: .28s; }
+  .section:nth-child(8) { animation-delay: .32s; }
+</style>
+</head>
+<body>
+
+<!-- ━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━ -->
+<header class="hero">
+  <div class="hero-badge"><span class="dot"></span> AI닷 · 진해문화센터</div>
+  <h1>GitHub<br><span>완전 정복</span> 가이드</h1>
+  <p class="hero-sub">가입부터 바이브코딩까지 · 갤럭시 스마트폰 기준</p>
+  <div class="hero-tags">
+    <span class="tag-blue">📱 모바일 기준</span>
+    <span class="tag-green">✅ 갤럭시 크롬</span>
+    <span class="tag-red">⚡ 바이브코딩</span>
+  </div>
+</header>
+
+<!-- ━━━━━━━━━━━━━━ 목차 ━━━━━━━━━━━━━━ -->
+<nav class="toc-wrap">
+  <div class="toc-scroll">
+    <a class="toc-pill" href="#s1"><span class="toc-num" style="background:var(--blue)">1</span>가입하기</a>
+    <a class="toc-pill" href="#s2"><span class="toc-num" style="background:var(--green)">2</span>저장소</a>
+    <a class="toc-pill" href="#s3"><span class="toc-num" style="background:var(--red)">3</span>파일 올리기</a>
+    <a class="toc-pill" href="#s4"><span class="toc-num" style="background:var(--blue)">4</span>URL 만들기</a>
+    <a class="toc-pill" href="#s5"><span class="toc-num" style="background:var(--green)">5</span>AI 추천</a>
+    <a class="toc-pill" href="#s6"><span class="toc-num" style="background:var(--red)">6</span>코드 받기</a>
+    <a class="toc-pill" href="#s7"><span class="toc-num" style="background:var(--blue)">7</span>바이브코딩</a>
+    <a class="toc-pill" href="#s8"><span class="toc-num" style="background:var(--green)">8</span>Spck 앱</a>
+  </div>
+</nav>
+
+<!-- ━━━━━━━━━━━━━━ MAIN ━━━━━━━━━━━━━━ -->
+<main class="content">
+
+  <!-- ══════════ 1. 가입 ══════════ -->
+  <section class="section theme-blue" id="s1">
+    <div class="sec-header">
+      <div class="sec-num">1</div>
+      <div class="sec-info">
+        <h2>깃허브 가입하기</h2>
+        <p>Sign up for GitHub · 갤럭시 크롬 기준</p>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <div class="sub-title">GitHub란?</div>
+      <p class="body-text">내가 만든 HTML 파일을 인터넷에 저장하고 웹페이지로 만들 수 있는 <strong>무료 서비스</strong>입니다. 카카오톡 클라우드처럼 파일을 보관하고 전 세계에 공개할 수 있어요.</p>
+
+      <div class="sub-title">STEP 1 · 크롬으로 접속</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <div class="step-main">크롬(Chrome) 앱 실행</div>
+            <div class="step-sub">스마트폰 홈화면에서 크롬 앱을 누릅니다</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-main">주소창 누르기 → 아래 주소 입력</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-box">
+        <code>github.com</code>
+        <button class="code-copy" onclick="copyCode(this,'github.com')">복사</button>
+      </div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <div class="step-main">키보드에서 이동 또는 Enter 누르기</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-title">STEP 2 · 회원가입 진행</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <div class="step-main">Sign up 버튼 누르기</div>
+            <div class="step-sub">또는 Sign up for GitHub 버튼</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-main">이메일 주소 입력 → Continue</div>
+            <div class="step-sub">예시: sample@gmail.com</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <div class="step-main">비밀번호 설정 → Continue</div>
+            <div class="step-sub">영어+숫자+특수문자, 8자 이상 / 예: Kim2026!</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <div class="step-main">사용자 이름(아이디) 입력 → Continue</div>
+            <div class="step-sub">예: kimai2026 · myfirstweb01 (이미 있으면 숫자 추가)</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">5</div>
+          <div class="step-text">
+            <div class="step-main">이메일 수신 여부 선택</div>
+            <div class="step-sub">n 또는 No 선택 후 Continue</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-title">STEP 3 · 퍼즐 인증</div>
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-body">
+          <div class="alert-label">퍼즐을 틀려도 괜찮아요!</div>
+          <div class="alert-text">Try again을 눌러 다시 천천히 풀면 됩니다. 누구나 한두 번 틀립니다.</div>
+        </div>
+      </div>
+      <table class="info-table">
+        <thead><tr><th>퍼즐 유형</th><th>진행 방법</th></tr></thead>
+        <tbody>
+          <tr><td>유형 1 · 같은 그림</td><td>기준 그림과 같은 그림 → Submit</td></tr>
+          <tr><td>유형 2 · 방향 맞추기</td><td>화살표로 그림 돌리기 → Submit</td></tr>
+          <tr><td>유형 3 · 특정 그림</td><td>해당 그림 모두 누르기 → Verify</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-title">STEP 4 · 이메일 인증</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <div class="step-main">Gmail 앱 열기</div>
+            <div class="step-sub">퍼즐 인증 후 GitHub에서 이메일이 옵니다</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-main">제목: Verify your email address 메일 찾기</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <div class="step-main">Verify email address 버튼 누르기</div>
+            <div class="step-sub">로그인 상태가 되면 가입 완료!</div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-tip">
+        <span class="alert-icon">💡</span>
+        <div class="alert-body">
+          <div class="alert-label">메일이 안 보일 때</div>
+          <div class="alert-text">새로고침 → 스팸함 → 프로모션함 → 이메일 주소 재확인</div>
+        </div>
+      </div>
+
+      <div class="sub-title">필수 영어 버튼</div>
+      <table class="info-table">
+        <thead><tr><th>영어 버튼</th><th>뜻</th></tr></thead>
+        <tbody>
+          <tr><td>Sign up</td><td>회원가입</td></tr>
+          <tr><td>Sign in</td><td>로그인</td></tr>
+          <tr><td>Continue</td><td>계속</td></tr>
+          <tr><td>Verify</td><td>확인</td></tr>
+          <tr><td>Submit</td><td>제출</td></tr>
+          <tr><td>Try again</td><td>다시 시도</td></tr>
+          <tr><td>Repository</td><td>저장소</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════ 2. 저장소 ══════════ -->
+  <section class="section theme-green" id="s2">
+    <div class="sec-header">
+      <div class="sec-num">2</div>
+      <div class="sec-info">
+        <h2>깃허브 내 저장소 만들기</h2>
+        <p>저장소 = 내 파일을 보관하는 인터넷 폴더</p>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <div class="sub-title">저장소(Repository)란?</div>
+      <p class="body-text">내 파일들을 넣어두는 <strong>인터넷 폴더</strong>입니다. 저장소를 만들면 나만의 웹페이지 주소(URL)도 생깁니다!</p>
+
+      <div class="sub-title">저장소 만들기 순서</div>
+      <div class="flow">
+        <div class="flow-step">로그인</div><div class="flow-arrow">→</div>
+        <div class="flow-step">+ 버튼</div><div class="flow-arrow">→</div>
+        <div class="flow-step">New repo</div><div class="flow-arrow">→</div>
+        <div class="flow-step">정보 입력</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Create!</div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <div class="step-main">크롬 열기 → github.com → 로그인</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-main">화면 오른쪽 위 + 버튼 누르기</div>
+            <div class="step-sub">메뉴가 열립니다</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <div class="step-main">New repository 선택</div>
+            <div class="step-sub">새 저장소 만들기</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-title">저장소 이름 설정</div>
+      <div class="compare">
+        <div class="compare-col compare-bad">
+          <div class="compare-title">❌ 피해야 할 이름</div>
+          <div class="compare-item">index.html</div>
+          <div class="compare-item">My First Web</div>
+          <div class="compare-item">내 저장소</div>
+        </div>
+        <div class="compare-col compare-good">
+          <div class="compare-title">✅ 올바른 이름</div>
+          <div class="compare-item"><strong>아이디.github.io</strong><br><span style="font-size:11px">(개인 홈페이지용 추천!)</span></div>
+          <div class="compare-item">my-first-web</div>
+          <div class="compare-item">practice-01</div>
+        </div>
+      </div>
+
+      <div class="steps mt8">
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <div class="step-main">Public 반드시 선택 (공개)</div>
+            <div class="step-sub">Add a README file 체크박스에 √ 체크</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">5</div>
+          <div class="step-text">
+            <div class="step-main">Create repository 버튼 누르기</div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-ok">
+        <span class="alert-icon">✅</span>
+        <div class="alert-body">
+          <div class="alert-label">저장소 생성 완료!</div>
+          <div class="alert-text">내 GitHub 페이지에 새 폴더가 만들어집니다.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 3. 파일 올리기 ══════════ -->
+  <section class="section theme-red" id="s3">
+    <div class="sec-header">
+      <div class="sec-num">3</div>
+      <div class="sec-info">
+        <h2>파일 올리기</h2>
+        <p>Upload File · 모바일 ⋯ 버튼 사용</p>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <div class="alert alert-warn">
+        <span class="alert-icon">🚨</span>
+        <div class="alert-body">
+          <div class="alert-label">가장 중요한 규칙!</div>
+          <div class="alert-text">파일 이름을 반드시 <strong>index.html</strong> 로 해야 합니다! 다른 이름이면 웹페이지가 열리지 않습니다.</div>
+        </div>
+      </div>
+
+      <div class="compare mt8">
+        <div class="compare-col compare-bad">
+          <div class="compare-title">❌ 잘못된 이름</div>
+          <div class="compare-item">github_index.html</div>
+          <div class="compare-item">index1.html</div>
+          <div class="compare-item">main.html</div>
+        </div>
+        <div class="compare-col compare-good">
+          <div class="compare-title">✅ 올바른 이름</div>
+          <div class="compare-item"><strong>index.html</strong></div>
+          <div class="compare-item">파일 길게 누르기<br>→ 이름 변경<br>→ index.html 입력</div>
+        </div>
+      </div>
+
+      <div class="sub-title">업로드 순서 (모바일)</div>
+      <div class="flow">
+        <div class="flow-step">저장소 열기</div><div class="flow-arrow">→</div>
+        <div class="flow-step">⋯ 버튼</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Upload</div><div class="flow-arrow">→</div>
+        <div class="flow-step">파일 선택</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Commit!</div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">만든 저장소 누르기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-main">Code 버튼 옆 ⋯ (점 3개) 버튼 누르기</div>
+            <div class="step-sub">★ 모바일에서는 반드시 이 버튼을 찾아야 합니다!</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-main">Upload file 선택</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <div class="step-main">파일 선택 → index.html 선택</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">5</div>
+          <div class="step-text">
+            <div class="step-main">화면 아래 Commit changes 반드시 누르기!</div>
+            <div class="step-sub">이 버튼을 안 누르면 저장이 되지 않습니다!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-ok">
+        <span class="alert-icon">✅</span>
+        <div class="alert-body">
+          <div class="alert-label">핵심 용어</div>
+          <div class="alert-text">Upload = 파일 올리기 · Commit changes = 저장 완료 버튼 · index.html = 첫 화면 파일</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 4. URL ══════════ -->
+  <section class="section theme-blue" id="s4">
+    <div class="sec-header">
+      <div class="sec-num">4</div>
+      <div class="sec-info">
+        <h2>URL 만들기 및 크롬 확인</h2>
+        <p>Settings → Pages → 내 웹페이지 주소 생성</p>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <div class="sub-title">GitHub Pages 설정</div>
+      <div class="flow">
+        <div class="flow-step">Settings</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Pages</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Branch:main</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Save</div><div class="flow-arrow">→</div>
+        <div class="flow-step">URL생성!</div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">저장소 상단 메뉴에서 Settings 누르기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text"><div class="step-main">왼쪽 메뉴에서 Pages 누르기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <div class="step-main">Source → Deploy from a branch 선택</div>
+            <div class="step-sub">Branch → main 선택</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <div class="step-main">Save 버튼 누르기 → 1~2분 기다리기</div>
+            <div class="step-sub">바로 안 보여도 정상! 새로고침 하세요</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-title">내 웹페이지 주소</div>
+      <table class="info-table">
+        <thead><tr><th>저장소 종류</th><th>내 주소</th></tr></thead>
+        <tbody>
+          <tr><td>개인 홈페이지<br><small>(아이디.github.io)</small></td><td><strong>https://아이디.github.io</strong></td></tr>
+          <tr><td>일반 저장소</td><td>https://아이디.github.io/<br>저장소이름</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-title">자주 발생하는 문제</div>
+      <table class="info-table">
+        <thead><tr><th>문제</th><th>해결 방법</th></tr></thead>
+        <tbody>
+          <tr><td>페이지가 안 열려요</td><td>index.html 이름 확인 / Pages 설정 확인</td></tr>
+          <tr><td>업로드가 안 돼요</td><td>Commit changes 눌렀는지 확인</td></tr>
+          <tr><td>주소가 안 생겨요</td><td>Settings→Pages 설정 재확인</td></tr>
+          <tr><td>바로 안 보여요</td><td>정상! 1~3분 후 새로고침</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════ 5. AI 추천 ══════════ -->
+  <section class="section theme-green" id="s5">
+    <div class="sec-header">
+      <div class="sec-num">5</div>
+      <div class="sec-info">
+        <h2>AI에게 코드 추천받기</h2>
+        <p>Claude AI로 깃허브 검색어 추천받기</p>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <p class="body-text">깃허브에는 수백만 개의 코드가 있어서 처음엔 어떻게 검색해야 할지 모릅니다. <strong>Claude AI에게 원하는 것을 말하면</strong> 딱 맞는 검색어를 알려줍니다!</p>
+
+      <div class="sub-title">이렇게 질문하세요</div>
+      <div class="q-box">
+        <div class="q-header">💬 Claude에게 보내는 질문 예시</div>
+        <div class="q-item">
+          <div class="q-label" style="color:var(--green-dk)">🎮 게임 찾을 때</div>
+          <div class="q-text">"깃허브에서 모바일에서 실행되는 html 게임 검색어 추천해줘"</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:var(--green-dk)">🌐 웹페이지 찾을 때</div>
+          <div class="q-text">"깃허브에서 식당 랜딩페이지 html 단일파일 검색어 추천해줘"</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:var(--green-dk)">🎨 포트폴리오</div>
+          <div class="q-text">"포트폴리오 만들 수 있는 html 단일파일 깃허브 검색어 알려줘"</div>
+        </div>
+      </div>
+
+      <div class="sub-title">깃허브 직접 검색</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">github.com → 상단 검색창에 검색어 입력</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text"><div class="step-main">검색 결과에서 원하는 저장소 선택</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-main">초록색 Code ▼ 버튼 → Download ZIP</div></div>
+        </div>
+      </div>
+
+      <div class="sub-title">추천 검색어 모음</div>
+      <table class="info-table">
+        <thead><tr><th>찾고 싶은 것</th><th>추천 검색어</th></tr></thead>
+        <tbody>
+          <tr><td>모바일 게임</td><td>html css js game single file mobile</td></tr>
+          <tr><td>식당/카페 페이지</td><td>restaurant landing page html single file</td></tr>
+          <tr><td>포트폴리오</td><td>portfolio html css single page</td></tr>
+          <tr><td>테트리스 게임</td><td>tetris html javascript</td></tr>
+          <tr><td>퀴즈 게임</td><td>quiz game html css javascript</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════ 6. 코드 받기 ══════════ -->
+  <section class="section theme-red" id="s6">
+    <div class="sec-header">
+      <div class="sec-num">6</div>
+      <div class="sec-info">
+        <h2>깃허브 코드 내려받기</h2>
+        <p>ZIP 다운로드 · Spck Clone · 미리보기</p>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <div class="sub-title">방법 A · ZIP으로 다운로드 (가장 쉬움!)</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">github.com → 원하는 저장소 검색</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text"><div class="step-main">초록색 Code ▼ 버튼 누르기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-main">Download ZIP 선택</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <div class="step-main">내 파일 앱 → Downloads → ZIP 탭 → 압축 해제</div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-ok">
+        <span class="alert-icon">✅</span>
+        <div class="alert-body">
+          <div class="alert-text">Downloads 폴더에 압축 해제된 폴더가 생성됩니다!</div>
+        </div>
+      </div>
+
+      <div class="sub-title">방법 B · Spck에서 Clone</div>
+      <div class="flow">
+        <div class="flow-step">✈ 비행기탭</div><div class="flow-arrow">→</div>
+        <div class="flow-step">프로젝트탭</div><div class="flow-arrow">→</div>
+        <div class="flow-step">빈화면탭</div><div class="flow-arrow">→</div>
+        <div class="flow-step">생성→Git복제</div>
+      </div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <div class="step-main">✈ 비행기 아이콘 탭 → 프로젝트 탭</div>
+            <div class="step-sub">왼쪽 사이드바 맨 왼쪽</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text"><div class="step-main">오른쪽 빈 화면 탭 → 생성 탭</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-main">Git 저장소 복제 선택</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <div class="step-main">깃허브 주소 입력 → 확인</div>
+            <div class="step-sub">반드시 https://github.com/ 을 앞에 붙이세요!</div>
+          </div>
+        </div>
+      </div>
+      <div class="compare">
+        <div class="compare-col compare-bad">
+          <div class="compare-title">❌ 틀린 형식</div>
+          <div class="compare-item">gabrielecirulli/2048</div>
+          <div class="compare-item">github.com/user/repo</div>
+        </div>
+        <div class="compare-col compare-good">
+          <div class="compare-title">✅ 올바른 형식</div>
+          <div class="compare-item">https://github.com/<br>gabrielecirulli/2048</div>
+        </div>
+      </div>
+
+      <div class="sub-title">미리보기 실행</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">폴더(📁) 아이콘 → 파일 목록 열기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-main">index.html 파일 선택</div>
+            <div class="step-sub">파일이 여러 개여도 index.html이 메인!</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-main">오른쪽 상단 초록색 ▶ 버튼 → 결과 확인!</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 7. 바이브코딩 ══════════ -->
+  <section class="section theme-blue" id="s7">
+    <div class="sec-header">
+      <div class="sec-num">7</div>
+      <div class="sec-info">
+        <h2>바이브코딩으로 코드 수정</h2>
+        <p>AI에게 말로 수정 요청 · 코딩 몰라도 OK!</p>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <div class="alert alert-tip">
+        <span class="alert-icon">✨</span>
+        <div class="alert-body">
+          <div class="alert-label">바이브코딩이란?</div>
+          <div class="alert-text">AI에게 말로 수정을 부탁해서 코드를 바꾸는 방법입니다. <strong>코딩을 전혀 몰라도 됩니다!</strong></div>
+        </div>
+      </div>
+
+      <div class="sub-title">전체 흐름</div>
+      <div class="flow">
+        <div class="flow-step">코드 복사</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Claude에 붙여넣기</div><div class="flow-arrow">→</div>
+        <div class="flow-step">수정 요청</div>
+      </div>
+      <div class="flow mt8">
+        <div class="flow-step">코드 복사</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Spck 전체교체</div><div class="flow-arrow">→</div>
+        <div class="flow-step">저장→▶확인</div>
+      </div>
+
+      <div class="sub-title">STEP 1 · Spck에서 코드 복사</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">Spck 앱 → index.html 파일 열기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text"><div class="step-main">코드 화면 길게 누르기 → 전체 선택 → 복사</div></div>
+        </div>
+      </div>
+
+      <div class="sub-title">STEP 2 · Claude AI에게 수정 요청</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-main">Claude 앱 또는 claude.ai 접속</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <div class="step-main">입력창 길게 누르기 → 붙여넣기 → 수정 내용 입력 → 전송</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-title">수정 요청 예시</div>
+      <div class="q-box">
+        <div class="q-header">💬 이렇게 말하면 됩니다</div>
+        <div class="q-item">
+          <div class="q-label" style="color:var(--blue-dk)">📞 전화번호 변경</div>
+          <div class="q-text">"전화번호를 010-4620-2829로 바꿔줘"</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:var(--blue-dk)">🏷️ 상호명 변경</div>
+          <div class="q-text">"상호명을 그림카페 고맙소로 바꿔줘"</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:var(--blue-dk)">🎨 배경색 변경</div>
+          <div class="q-text">"배경색을 연한 파란색으로 바꿔줘"</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:var(--blue-dk)">🍵 메뉴 추가</div>
+          <div class="q-text">"메뉴에 아메리카노 5,000원 추가해줘"</div>
+        </div>
+        <div class="q-item">
+          <div class="q-label" style="color:var(--blue-dk)">📍 주소 변경</div>
+          <div class="q-text">"주소를 진해구 중원로 40-1로 바꿔줘"</div>
+        </div>
+      </div>
+
+      <div class="sub-title">STEP 3 · 수정 코드 적용</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">5</div>
+          <div class="step-text"><div class="step-main">AI가 준 코드 박스 복사 버튼 누르기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">6</div>
+          <div class="step-text"><div class="step-main">Spck → 전체 선택 → 삭제 → 붙여넣기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">7</div>
+          <div class="step-text"><div class="step-main">저장(💾) → ▶ 버튼으로 미리보기 확인!</div></div>
+        </div>
+      </div>
+      <div class="alert alert-tip">
+        <span class="alert-icon">💡</span>
+        <div class="alert-body">
+          <div class="alert-label">꿀팁</div>
+          <div class="alert-text">한 번에 하나씩 요청하면 더 정확합니다! 마음에 안 들면 <strong>"다시 해줘"</strong> 라고 하면 됩니다.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 8. Spck ══════════ -->
+  <section class="section theme-green" id="s8">
+    <div class="sec-header">
+      <div class="sec-num">8</div>
+      <div class="sec-info">
+        <h2>Spck Editor 활용방법</h2>
+        <p>설치 · 코드 가져오기 · 미리보기 · 저장</p>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <p class="body-text">스마트폰으로 HTML 코드를 편집하고 미리보기 할 수 있는 <strong>무료 앱</strong>입니다.</p>
+
+      <div class="sub-title">설치 방법</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">Play 스토어 → Spck Editor 검색</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-main">Spck Code Editor, Compiler 선택</div>
+            <div class="step-sub">개발사: SpckEditor · 무료</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-main">설치 → 열기</div></div>
+        </div>
+      </div>
+
+      <div class="sub-title">화면 아이콘 설명</div>
+      <table class="info-table">
+        <thead><tr><th>아이콘</th><th>기능</th></tr></thead>
+        <tbody>
+          <tr><td>✈ 비행기 (맨 왼쪽)</td><td><strong>★ 핵심!</strong> 프로젝트 메뉴</td></tr>
+          <tr><td>📁 폴더 아이콘</td><td>파일 목록 보기</td></tr>
+          <tr><td>🔍 돋보기</td><td>파일 내용 검색</td></tr>
+          <tr><td>▶ 초록 버튼 (오른쪽 상단)</td><td><strong>★ 핵심!</strong> 미리보기 실행</td></tr>
+          <tr><td>⋮ 점 세개</td><td>추가 메뉴 (다운로드 등)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-title">깃허브 코드 가져오기 (Clone)</div>
+      <div class="flow">
+        <div class="flow-step">✈ 비행기탭</div><div class="flow-arrow">→</div>
+        <div class="flow-step">프로젝트탭</div><div class="flow-arrow">→</div>
+        <div class="flow-step">빈화면탭</div><div class="flow-arrow">→</div>
+        <div class="flow-step">생성→Git복제</div>
+      </div>
+      <div class="alert alert-warn">
+        <span class="alert-icon">🚨</span>
+        <div class="alert-body">
+          <div class="alert-label">주소 형식 확인 필수!</div>
+          <div class="alert-text">
+            ❌ gabrielecirulli/2048<br>
+            ✅ https://github.com/gabrielecirulli/2048
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-title">미리보기 실행</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">폴더(📁) 아이콘 → 파일 목록 열기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text"><div class="step-main">index.html 선택 → 초록색 ▶ 버튼!</div></div>
+        </div>
+      </div>
+
+      <div class="sub-title">파일 다운로드</div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text"><div class="step-main">📁 폴더 아이콘 → 파일 목록 열기</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <div class="step-main">파일 이름 옆 ⋮ → 다운로드 선택</div>
+            <div class="step-sub">파일마다 각각 다운로드!</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text"><div class="step-main">내 파일 앱 → Downloads 폴더 확인!</div></div>
+        </div>
+      </div>
+
+      <div class="sub-title">자주 묻는 질문</div>
+      <table class="info-table">
+        <thead><tr><th>질문</th><th>답변</th></tr></thead>
+        <tbody>
+          <tr><td>앱이 안 열려요</td><td>Play 스토어에서 업데이트 후 재시도</td></tr>
+          <tr><td>파일이 안 보여요</td><td>📁 폴더 아이콘 눌러 목록 확인</td></tr>
+          <tr><td>미리보기 안 나와요</td><td>index.html 선택 후 ▶ 버튼</td></tr>
+          <tr><td>비공개 저장소는?</td><td>깃허브 토큰 필요 (강사에게 문의)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- ━━━━━━━━━━━━━━ FOOTER ━━━━━━━━━━━━━━ -->
+<div style="padding:0 16px 16px; max-width:480px; margin:0 auto;">
+  <div class="footer">
+    <div class="footer-cell" style="background:var(--blue)">
+      <div class="f-title">AI닷 (AI DOT)</div>
+      <div class="f-sub">진해문화센터</div>
+    </div>
+    <div class="footer-cell" style="background:var(--green)">
+      <div class="f-title">GitHub 완전정복</div>
+      <div class="f-sub">모바일 가이드</div>
+    </div>
+    <div class="footer-cell" style="background:var(--red)">
+      <div class="f-title">2026 봄 AI 캠프</div>
+      <div class="f-sub">진해 · 창원</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 코드 복사
+  function copyCode(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ 복사됨';
+      btn.style.color = '#4AFF80';
+      setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1800);
+    }).catch(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ 복사됨';
+      setTimeout(() => { btn.textContent = orig; }, 1800);
+    });
+  }
+
+  // 목차 pill 하이라이트 - scrollIntoView 제거 (페이지 점프 방지)
+  const pills = document.querySelectorAll('.toc-pill');
+  const sections = document.querySelectorAll('.section');
+  const tocScroll = document.querySelector('.toc-scroll');
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        pills.forEach(p => {
+          p.style.boxShadow = '';
+          p.style.fontWeight = '600';
+        });
+        const active = document.querySelector(`.toc-pill[href="#${id}"]`);
+        if (active) {
+          active.style.boxShadow = '0 0 0 2.5px var(--blue)';
+          // 목차 가로 스크롤만 이동 (페이지 세로 스크롤 건드리지 않음)
+          const pillLeft = active.offsetLeft;
+          const pillWidth = active.offsetWidth;
+          const scrollWidth = tocScroll.offsetWidth;
+          tocScroll.scrollTo({
+            left: pillLeft - (scrollWidth / 2) + (pillWidth / 2),
+            behavior: 'smooth'
+          });
+        }
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '0px 0px -40% 0px' });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
